@@ -395,20 +395,26 @@ class _HomeState extends State<Home> {
                     padding:
                         EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
                     child: Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xFF1C2321),
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color.fromARGB(255, 82, 81, 81)
-                                  .withOpacity(0.2),
-                              spreadRadius: 2,
-                              blurRadius: 5,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
+                      decoration: BoxDecoration(
+                        color: Color(0xFF1C2321),
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color.fromARGB(255, 82, 81, 81)
+                                .withOpacity(0.2),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 20, bottom: 5),
+                        child: Expanded(
+                          child: _LineChart(isShowingMainData: true),
                         ),
-                        child: _LineChart(isShowingMainData: true)),
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -540,20 +546,18 @@ class _LineChart extends StatelessWidget {
     String text;
     switch (value.toInt()) {
       case 1:
-        text = '1m';
+        text = '25%';
         break;
       case 2:
-        text = '2m';
+        text = '50%';
         break;
       case 3:
-        text = '3m';
+        text = '75%';
         break;
       case 4:
-        text = '5m';
+        text = '100%';
         break;
-      case 5:
-        text = '6m';
-        break;
+
       default:
         return Container();
     }
