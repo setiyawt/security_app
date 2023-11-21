@@ -410,8 +410,12 @@ class _HomeState extends State<Home> {
                       ),
                       child: Padding(
                         padding: EdgeInsets.only(top: 20, bottom: 5),
-                        child: Expanded(
-                          child: _LineChart(isShowingMainData: true),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: _LineChart(isShowingMainData: true),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -542,6 +546,7 @@ class _LineChart extends StatelessWidget {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 14,
+      color: Colors.white,
     );
     String text;
     switch (value.toInt()) {
@@ -575,6 +580,7 @@ class _LineChart extends StatelessWidget {
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
+      color: Colors.white,
       fontSize: 16,
     );
     Widget text;
