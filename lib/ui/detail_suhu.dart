@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class Detail_sensor extends StatefulWidget {
-  const Detail_sensor({super.key});
+class Detail_suhu extends StatefulWidget {
+  const Detail_suhu({super.key});
 
   @override
-  State<Detail_sensor> createState() => _Detail_sensorState();
+  State<Detail_suhu> createState() => _Detail_suhuState();
 }
 
-class _Detail_sensorState extends State<Detail_sensor> {
+class _Detail_suhuState extends State<Detail_suhu> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

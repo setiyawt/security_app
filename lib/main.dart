@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:security_system/ui/home.dart';
+import 'package:security_system/ui/login.dart';
 import 'package:security_system/ui/login_signup.dart';
 
 void main() {
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'MyApp',
-      home: Home(),
+      home: Login(),
       debugShowCheckedModeBanner: false,
     );
   }

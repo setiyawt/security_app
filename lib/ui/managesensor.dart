@@ -17,6 +17,7 @@ class _ManageSensorState extends State<ManageSensor> {
         title: const Text('Manage Sensor'),
         centerTitle: true,
         backgroundColor: Color(0xFF1C2321),
+        automaticallyImplyLeading: false,
       ),
       body: const CardExample(),
     );

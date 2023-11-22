@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:security_system/ui/detail_profile.dart';
+import 'package:security_system/ui/faq.dart';
+import 'package:security_system/ui/login.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  const Profile({super.key});
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -11,145 +13,113 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: Scaffold(
+    return Scaffold(
       backgroundColor: Color(0xFF5E6572),
-      appBar: AppBar(title: const Text('Card Sample')),
-      body: const CardExample(),
-    ));
-  }
-}
-
-class CardExample extends StatelessWidget {
-  const CardExample({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.only(top: 20, bottom: 5, left: 10, right: 10),
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Card(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const ListTile(
-                    leading: Icon(Icons.album),
-                    title: Text('The Enchanted Nightingale'),
-                    subtitle:
-                        Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      TextButton(
-                        child: const Text('BUY TICKETS'),
-                        onPressed: () {/* ... */},
+      appBar: AppBar(
+          title: Text("Profile"),
+          centerTitle: true,
+          backgroundColor: Color(0xFF1C2321),
+          elevation: 0,
+          automaticallyImplyLeading: false),
+      body: Container(
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage("assets/bg2.png"),
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
+        child: Column(children: [
+          Padding(
+            padding:
+                const EdgeInsets.only(top: 10, bottom: 10, left: 15, right: 15),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.person_2_rounded,
+                  color: Colors.white,
+                ),
+                SizedBox(width: 10),
+                TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DetailProfile()),
+                      );
+                    },
+                    child: Text(
+                      'My Profile',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
                       ),
-                      const SizedBox(width: 8),
-                      TextButton(
-                        child: const Text('LISTEN'),
-                        onPressed: () {/* ... */},
-                      ),
-                      const SizedBox(width: 8),
-                    ],
-                  ),
-                ],
-              ),
+                    ))
+              ],
             ),
-            SizedBox(height: 10),
-            Card(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const ListTile(
-                    leading: Icon(Icons.album),
-                    title: Text('The Enchanted Nightingale'),
-                    subtitle:
-                        Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      TextButton(
-                        child: const Text('BUY TICKETS'),
-                        onPressed: () {/* ... */},
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.only(top: 10, bottom: 10, left: 15, right: 15),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.question_answer_outlined,
+                  color: Colors.white,
+                ),
+                TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => faq()),
+                      );
+                    },
+                    child: Text(
+                      'FAQ',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
                       ),
-                      const SizedBox(width: 8),
-                      TextButton(
-                        child: const Text('LISTEN'),
-                        onPressed: () {/* ... */},
-                      ),
-                      const SizedBox(width: 8),
-                    ],
-                  ),
-                ],
-              ),
+                    ))
+              ],
             ),
-            SizedBox(
-              height: 10,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.only(top: 5, bottom: 5, left: 15, right: 15),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.logout_sharp,
+                  color: Colors.white,
+                ),
+                SizedBox(width: 10),
+                TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Login()),
+                      );
+                    },
+                    child: Text(
+                      'Log out',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ))
+              ],
             ),
-            Card(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const ListTile(
-                    leading: Icon(Icons.album),
-                    title: Text('The Enchanted Nightingale'),
-                    subtitle:
-                        Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      TextButton(
-                        child: const Text('BUY TICKETS'),
-                        onPressed: () {/* ... */},
-                      ),
-                      const SizedBox(width: 8),
-                      TextButton(
-                        child: const Text('LISTEN'),
-                        onPressed: () {/* ... */},
-                      ),
-                      const SizedBox(width: 8),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 10),
-            Card(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const ListTile(
-                    leading: Icon(Icons.album),
-                    title: Text('The Enchanted Nightingale'),
-                    subtitle:
-                        Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      TextButton(
-                        child: const Text('BUY TICKETS'),
-                        onPressed: () {/* ... */},
-                      ),
-                      const SizedBox(width: 8),
-                      TextButton(
-                        child: const Text('LISTEN'),
-                        onPressed: () {/* ... */},
-                      ),
-                      const SizedBox(width: 8),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ]),
       ),
     );
   }
