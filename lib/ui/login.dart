@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:security_system/ui/forgotpass.dart';
 import 'package:security_system/ui/home.dart';
 import 'package:security_system/ui/signup.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -12,7 +13,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool isChecked = false;
-  TextEditingController username = TextEditingController();
+  TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
@@ -48,7 +49,7 @@ class _LoginState extends State<Login> {
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: TextFormField(
-                            controller: username,
+                            controller: email,
                             cursorColor: Colors.grey,
                             style: TextStyle(
                               fontSize: 12,
@@ -150,37 +151,47 @@ class _LoginState extends State<Login> {
                     key: formKey,
                     child: GestureDetector(
                       onTap: () {
-                        String tUser = 'anton';
-                        String tPass = '123';
-                        if (username.text.isEmpty || password.text.isEmpty) {
-                          setState(() {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                    'Username and Password cannot be empty'),
-                              ),
-                            );
-                          });
-                        } else if (username.text == tUser &&
-                            password.text == tPass) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Home(
-                                  // username: username.text,
-                                  // password: password.text,
-                                  ),
-                            ),
-                          );
-                        } else {
-                          setState(() {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Invalid username or password'),
-                              ),
-                            );
-                          });
-                        }
+                        // String tUser = 'anton';
+                        // String tPass = '123';
+                        // if (username.text.isEmpty || password.text.isEmpty) {
+                        //   setState(() {
+                        //     ScaffoldMessenger.of(context).showSnackBar(
+                        //       SnackBar(
+                        //         content: Text(
+                        //             'Username and Password cannot be empty'),
+                        //       ),
+                        //     );
+                        //   });
+                        // } else if (username.text == tUser &&
+                        //     password.text == tPass) {
+                        //   Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) => Home(
+                        //           // username: username.text,
+                        //           // password: password.text,
+                        //           ),
+                        //     ),
+                        //   );
+                        // } else {
+                        //   setState(() {
+                        //     ScaffoldMessenger.of(context).showSnackBar(
+                        //       SnackBar(
+                        //         content: Text('Invalid username or password'),
+                        //       ),
+                        //     );
+                        //   });
+                        // }
+                        FirebaseAuth.instance
+                            .signInWithEmailAndPassword(
+                                email: email.text, password: password.text)
+                            .then((value) {
+                          print("Successfull Login");
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => Home()));
+                        }).onError((error, stackTrace) {
+                          print('Error ${error.toString()}');
+                        });
                       },
                       child: Container(
                           height: 50,

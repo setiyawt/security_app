@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:security_system/ui/home.dart';
 import 'package:security_system/ui/login.dart';
-import 'package:security_system/ui/login_signup.dart';
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 

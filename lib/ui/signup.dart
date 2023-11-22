@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:security_system/ui/home.dart';
 import 'package:security_system/ui/login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Registration extends StatefulWidget {
   const Registration({super.key});
@@ -10,7 +12,7 @@ class Registration extends StatefulWidget {
 
 class _RegistrationState extends State<Registration> {
   bool isChecked = false;
-  TextEditingController username = TextEditingController();
+  TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   final formKey = GlobalKey<FormState>();
   @override
@@ -156,39 +158,19 @@ class _RegistrationState extends State<Registration> {
                             key: formKey,
                             child: GestureDetector(
                               onTap: () {
-                                String tUser = '';
-                                String tPass = '';
-                                if (username.text.isEmpty ||
-                                    password.text.isEmpty) {
-                                  setState(() {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                            'Username and Password cannot be empty'),
-                                      ),
-                                    );
-                                  });
-                                } else if (username.text == tUser &&
-                                    password.text == tPass) {
+                                FirebaseAuth.instance
+                                    .createUserWithEmailAndPassword(
+                                        email: email.text,
+                                        password: password.text)
+                                    .then((value) {
+                                  print("Created New Account");
                                   Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Login(
-                                          // username: username.text,
-                                          // password: password.text,
-                                          ),
-                                    ),
-                                  );
-                                } else {
-                                  setState(() {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                            'Invalid username or password'),
-                                      ),
-                                    );
-                                  });
-                                }
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Home()));
+                                }).onError((error, stackTrace) {
+                                  print('Error ${error.toString()}');
+                                });
                               },
                               child: Container(
                                   height: 50,

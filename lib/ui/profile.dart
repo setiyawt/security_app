@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:security_system/ui/detail_profile.dart';
 import 'package:security_system/ui/faq.dart';
@@ -103,10 +104,11 @@ class _ProfileState extends State<Profile> {
                 SizedBox(width: 10),
                 TextButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Login()),
-                      );
+                      FirebaseAuth.instance.signOut().then((value) {
+                        print("Signed out");
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Login()));
+                      });
                     },
                     child: Text(
                       'Log out',
