@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:security_system/ui/home.dart';
+import 'package:security_system/main.dart';
 import 'package:security_system/ui/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -15,6 +15,31 @@ class _RegistrationState extends State<Registration> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   final formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    email.dispose();
+    password.dispose();
+
+    super.dispose();
+  }
+
+  Future signup() async {
+    final isValid = formKey.currentState!.validate();
+    if (!isValid) return;
+
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email.text.trim(),
+        password: password.text.trim(),
+      );
+    } on FirebaseAuthException catch (e) {
+      print(e);
+
+      Utils.showSnackBar(e.message);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,6 +77,7 @@ class _RegistrationState extends State<Registration> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: TextFormField(
+                                    controller: email,
                                     cursorColor: Colors.grey,
                                     style: TextStyle(
                                       fontSize: 12,
@@ -67,7 +93,7 @@ class _RegistrationState extends State<Registration> {
                                         Icons.people_outline_outlined,
                                         color: Colors.grey,
                                       ),
-                                      hintText: 'Username',
+                                      hintText: 'Email',
                                     ),
                                   ),
                                 ),
@@ -88,6 +114,7 @@ class _RegistrationState extends State<Registration> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: TextFormField(
+                                    controller: password,
                                     cursorColor: Colors.grey,
                                     style: TextStyle(
                                       fontSize: 12,
@@ -114,42 +141,6 @@ class _RegistrationState extends State<Registration> {
                         ),
                       ),
                       Positioned(
-                        top: 50,
-                        bottom: -70,
-                        child: SizedBox(
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.only(top: 10),
-                                width: 300,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: TextFormField(
-                                    cursorColor: Colors.grey,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.black54,
-                                    ),
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.grey),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      prefixIcon: const Icon(
-                                        Icons.email_outlined,
-                                        color: Colors.grey,
-                                      ),
-                                      hintText: 'Email',
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
                         bottom: 150,
                         left: 15,
                         right: 15,
@@ -158,19 +149,34 @@ class _RegistrationState extends State<Registration> {
                             key: formKey,
                             child: GestureDetector(
                               onTap: () {
-                                FirebaseAuth.instance
-                                    .createUserWithEmailAndPassword(
-                                        email: email.text,
-                                        password: password.text)
-                                    .then((value) {
-                                  print("Created New Account");
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Home()));
-                                }).onError((error, stackTrace) {
-                                  print('Error ${error.toString()}');
-                                });
+                                signup();
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text('Email verification'),
+                                      content:
+                                          Text('Please verified your email'),
+                                      actions: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        const Login()));
+                                          },
+                                          child: Text("OK"),
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                    Color>(Color(0xFF1C2321)),
+                                          ),
+                                        )
+                                      ],
+                                    );
+                                  },
+                                );
                               },
                               child: Container(
                                   height: 50,

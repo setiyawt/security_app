@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:security_system/ui/forgotpass.dart';
 import 'package:security_system/ui/home.dart';
 import 'package:security_system/ui/signup.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Login extends StatefulWidget {
@@ -12,7 +13,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  bool isChecked = false;
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -61,11 +61,17 @@ class _LoginState extends State<Login> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               prefixIcon: const Icon(
-                                Icons.people_outline_outlined,
+                                Icons.email_outlined,
                                 color: Colors.grey,
                               ),
-                              hintText: 'Username',
+                              hintText: 'Email',
                             ),
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (email) =>
+                                email != null && !EmailValidator.validate(email)
+                                    ? 'Enter a valid email'
+                                    : null,
                           ),
                         ),
                       ),
@@ -103,6 +109,12 @@ class _LoginState extends State<Login> {
                               hintText: 'Password',
                             ),
                             obscureText: true,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) =>
+                                value != null && value.length < 6
+                                    ? 'Enter min. 6 characters'
+                                    : null,
                           ),
                         ),
                       ),
@@ -151,46 +163,55 @@ class _LoginState extends State<Login> {
                     key: formKey,
                     child: GestureDetector(
                       onTap: () {
-                        // String tUser = 'anton';
-                        // String tPass = '123';
-                        // if (username.text.isEmpty || password.text.isEmpty) {
-                        //   setState(() {
-                        //     ScaffoldMessenger.of(context).showSnackBar(
-                        //       SnackBar(
-                        //         content: Text(
-                        //             'Username and Password cannot be empty'),
-                        //       ),
-                        //     );
-                        //   });
-                        // } else if (username.text == tUser &&
-                        //     password.text == tPass) {
-                        //   Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => Home(
-                        //           // username: username.text,
-                        //           // password: password.text,
-                        //           ),
-                        //     ),
-                        //   );
-                        // } else {
-                        //   setState(() {
-                        //     ScaffoldMessenger.of(context).showSnackBar(
-                        //       SnackBar(
-                        //         content: Text('Invalid username or password'),
-                        //       ),
-                        //     );
-                        //   });
-                        // }
                         FirebaseAuth.instance
                             .signInWithEmailAndPassword(
-                                email: email.text, password: password.text)
+                                email: email.text.trim(),
+                                password: password.text.trim())
                             .then((value) {
-                          print("Successfull Login");
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Home()));
-                        }).onError((error, stackTrace) {
+                          print("Successfully Logged In");
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Home()),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Login successful"),
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                        }).catchError((error) {
                           print('Error ${error.toString()}');
+
+                          if (email.text.isEmpty || password.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'Username and Password cannot be empty'),
+                                duration: Duration(seconds: 3),
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (error is FirebaseAuthException) {
+                            if (error.code == 'wrong-password' ||
+                                error.code == 'user-not-found') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Invalid email and password'),
+                                  duration: Duration(seconds: 3),
+                                ),
+                              );
+                            }
+                          } else {
+                            // Handling other unexpected errors
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('An error occurred'),
+                                duration: Duration(seconds: 3),
+                              ),
+                            );
+                          }
                         });
                       },
                       child: Container(

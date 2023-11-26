@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:security_system/ui/detail_flame.dart';
+import 'package:security_system/ui/detail_gas.dart';
 import 'package:security_system/ui/detail_suhu.dart';
 
 class ManageSensor extends StatefulWidget {
@@ -96,7 +98,7 @@ class CardExample extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Detail_suhu(),
+                                builder: (context) => ChartScreen(),
                               ),
                             );
                           },
@@ -166,7 +168,14 @@ class CardExample extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DetailGas(),
+                              ),
+                            );
+                          },
                         ),
                         const SizedBox(width: 8),
                       ],
@@ -235,7 +244,14 @@ class CardExample extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          onPressed: () {/* ... */},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DetailFlame(),
+                              ),
+                            );
+                          },
                         ),
                         const SizedBox(width: 8),
                       ],

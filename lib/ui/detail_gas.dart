@@ -1,14 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ChartScreen extends StatefulWidget {
+class DetailGas extends StatefulWidget {
+  const DetailGas({Key? key}) : super(key: key);
+
   @override
-  _ChartScreenState createState() => _ChartScreenState();
+  _DetailGasState createState() => _DetailGasState();
 }
 
-class _ChartScreenState extends State<ChartScreen> {
+class _DetailGasState extends State<DetailGas> {
   List<Map<String, dynamic>> data = [];
 
   @override
@@ -19,17 +20,17 @@ class _ChartScreenState extends State<ChartScreen> {
 
   Future<void> fetchData() async {
     try {
-      final response =
-          await http.get(Uri.parse('http://10.0.2.2:3000/api/data'));
+      CollectionReference dataCollection =
+          FirebaseFirestore.instance.collection('7day-overview');
 
-      if (response.statusCode == 200) {
-        setState(() {
-          data = List<Map<String, dynamic>>.from(json.decode(response.body));
-        });
-      } else {
-        throw Exception(
-            'Failed to load data. Status code: ${response.statusCode}');
-      }
+      QuerySnapshot dataQuerySnapshot = await dataCollection.get();
+
+      setState(() {
+        data = dataQuerySnapshot.docs
+            .map((DocumentSnapshot document) =>
+                Map<String, dynamic>.from(document.data() as Map))
+            .toList();
+      });
     } catch (e) {
       print('Error fetching data: $e');
       // Handle error accordingly
@@ -52,7 +53,7 @@ class _ChartScreenState extends State<ChartScreen> {
                   for (int j = 0; j < data.length; j++)
                     FlSpot(
                       j.toDouble(),
-                      data[j]['suhu'].toDouble(),
+                      data[j]['Temp'].toDouble(),
                     ),
                 ],
                 isCurved: true,
@@ -65,7 +66,7 @@ class _ChartScreenState extends State<ChartScreen> {
                   for (int j = 0; j < data.length; j++)
                     FlSpot(
                       j.toDouble(),
-                      data[j]['humid'].toDouble(),
+                      data[j]['Gas'].toDouble(),
                     ),
                 ],
                 isCurved: true,
@@ -78,11 +79,24 @@ class _ChartScreenState extends State<ChartScreen> {
                   for (int j = 0; j < data.length; j++)
                     FlSpot(
                       j.toDouble(),
-                      data[j]['lux'].toDouble(),
+                      data[j]['Flame'].toDouble(),
                     ),
                 ],
                 isCurved: true,
                 color: Colors.orange, // Warna untuk data kelembaban
+                barWidth: 4,
+                belowBarData: BarAreaData(show: false),
+              ),
+              LineChartBarData(
+                spots: [
+                  for (int j = 0; j < data.length; j++)
+                    FlSpot(
+                      j.toDouble(),
+                      data[j]['Motion'].toDouble(),
+                    ),
+                ],
+                isCurved: true,
+                color: Colors.pink, // Warna untuk data kelembaban
                 barWidth: 4,
                 belowBarData: BarAreaData(show: false),
               ),

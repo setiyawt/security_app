@@ -1,16 +1,13 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:security_system/ui/history.dart';
 import 'package:security_system/ui/managesensor.dart';
 import 'package:security_system/ui/profile.dart';
+
 import 'package:fl_chart/fl_chart.dart';
 
 class Home extends StatefulWidget {
-  // final String username;
-  // final String password;
-
-  //Home({required this.username, required this.password});
-
   const Home({super.key});
 
   @override
@@ -29,6 +26,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser!;
     List<Widget> widgets = [
       SingleChildScrollView(
         child: Padding(
@@ -39,7 +37,7 @@ class _HomeState extends State<Home> {
                 padding:
                     EdgeInsets.only(top: 10, bottom: 10, left: 5, right: 5),
                 child: Text(
-                  'Hello,',
+                  'Hello',
                   style: TextStyle(
                     fontSize: 24,
                     color: Colors.white,
