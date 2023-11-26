@@ -12,7 +12,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  bool isChecked = false;
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -61,10 +60,10 @@ class _LoginState extends State<Login> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               prefixIcon: const Icon(
-                                Icons.people_outline_outlined,
+                                Icons.email_outlined,
                                 color: Colors.grey,
                               ),
-                              hintText: 'Username',
+                              hintText: 'Email',
                             ),
                           ),
                         ),
@@ -151,62 +150,73 @@ class _LoginState extends State<Login> {
                     key: formKey,
                     child: GestureDetector(
                       onTap: () {
-                        // String tUser = 'anton';
-                        // String tPass = '123';
-                        // if (username.text.isEmpty || password.text.isEmpty) {
-                        //   setState(() {
-                        //     ScaffoldMessenger.of(context).showSnackBar(
-                        //       SnackBar(
-                        //         content: Text(
-                        //             'Username and Password cannot be empty'),
-                        //       ),
-                        //     );
-                        //   });
-                        // } else if (username.text == tUser &&
-                        //     password.text == tPass) {
-                        //   Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => Home(
-                        //           // username: username.text,
-                        //           // password: password.text,
-                        //           ),
-                        //     ),
-                        //   );
-                        // } else {
-                        //   setState(() {
-                        //     ScaffoldMessenger.of(context).showSnackBar(
-                        //       SnackBar(
-                        //         content: Text('Invalid username or password'),
-                        //       ),
-                        //     );
-                        //   });
-                        // }
                         FirebaseAuth.instance
                             .signInWithEmailAndPassword(
                                 email: email.text, password: password.text)
                             .then((value) {
-                          print("Successfull Login");
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Home()));
-                        }).onError((error, stackTrace) {
+                          print("Successfully Logged In");
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Home()),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Login successful"),
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                        }).catchError((error) {
                           print('Error ${error.toString()}');
+
+                          if (email.text.isEmpty || password.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'Username and Password cannot be empty'),
+                                duration: Duration(seconds: 3),
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (error is FirebaseAuthException) {
+                            if (error.code == 'wrong-password' ||
+                                error.code == 'user-not-found') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Invalid email and password'),
+                                  duration: Duration(seconds: 3),
+                                ),
+                              );
+                            }
+                          } else {
+                            // Handling other unexpected errors
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('An error occurred'),
+                                duration: Duration(seconds: 3),
+                              ),
+                            );
+                          }
                         });
                       },
                       child: Container(
-                          height: 50,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF1C2321),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                        height: 50,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF1C2321),
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                          child: const Center(
-                            child: Text('Login',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                )),
-                          )),
+                        ),
+                      ),
                     ),
                   ),
                 ),
