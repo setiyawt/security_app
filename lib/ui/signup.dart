@@ -11,33 +11,11 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
+  bool isChecked = false;
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-<<<<<<< HEAD
-  @override
-  void dispose() {
-    email.dispose();
-    password.dispose();
-
-    super.dispose();
-  }
-
-  Future signup() async {
-    final isValid = formKey.currentState!.validate();
-    if (!isValid) return;
-
-    try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email.text.trim(),
-        password: password.text.trim(),
-      );
-    } on FirebaseAuthException catch (e) {
-      print(e);
-
-      Utils.showSnackBar(e.message);
-=======
   Future<UserCredential> registerWithEmailAndPassword(
       String email, String password) async {
     try {
@@ -83,7 +61,30 @@ class _RegistrationState extends State<Registration> {
         // Handle exceptions, if needed
         print('Error during registration: ${e.message}');
       }
->>>>>>> 8db16abf5d6efd2df332e57337d7911f9144d35a
+    }
+  }
+
+  @override
+  void dispose() {
+    email.dispose();
+    password.dispose();
+
+    super.dispose();
+  }
+
+  Future signup() async {
+    final isValid = formKey.currentState!.validate();
+    if (!isValid) return;
+
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email.text.trim(),
+        password: password.text.trim(),
+      );
+    } on FirebaseAuthException catch (e) {
+      print(e);
+
+      Utils.showSnackBar(e.message);
     }
   }
 
@@ -195,7 +196,6 @@ class _RegistrationState extends State<Registration> {
                           child: Form(
                             key: formKey,
                             child: GestureDetector(
-<<<<<<< HEAD
                               onTap: () {
                                 signup();
                                 showDialog(
@@ -203,8 +203,8 @@ class _RegistrationState extends State<Registration> {
                                   builder: (context) {
                                     return AlertDialog(
                                       title: Text('Email verification'),
-                                      content:
-                                          Text('Please verified your email'),
+                                      content: Text(
+                                          'Please verify your email address'),
                                       actions: [
                                         ElevatedButton(
                                           onPressed: () {
@@ -225,99 +225,22 @@ class _RegistrationState extends State<Registration> {
                                     );
                                   },
                                 );
-=======
-                              onTap: () async {
-                                if (formKey.currentState!.validate()) {
-                                  try {
-                                    UserCredential userCredential =
-                                        await FirebaseAuth.instance
-                                            .createUserWithEmailAndPassword(
-                                      email: email.text,
-                                      password: password.text,
-                                    );
-
-                                    // Check if the email needs verification
-                                    if (!userCredential.user!.emailVerified) {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            title: Text('Email Verification'),
-                                            content: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text(
-                                                    'Please check your email for verification.'),
-                                              ],
-                                            ),
-                                            actions: [
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.pushReplacement(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (_) =>
-                                                            const Login()),
-                                                  );
-                                                },
-                                                child: Text("OK"),
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStateProperty.all<
-                                                              Color>(
-                                                          Color(0xFF1C2321)),
-                                                ),
-                                              )
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    }
-                                  } catch (error) {
-                                    print('Error $error');
-                                    String errorMessage = 'An error occurred';
-
-                                    // Handling specific errors
-                                    if (error is FirebaseAuthException) {
-                                      if (error.code ==
-                                          'email-already-in-use') {
-                                        errorMessage = 'Email already in use';
-                                      } else if (error.code ==
-                                          'weak-password') {
-                                        errorMessage =
-                                            'Password should be at least 6 characters';
-                                      }
-                                      // Handle other specific errors as needed
-                                    }
-
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(errorMessage),
-                                        duration: Duration(seconds: 3),
-                                      ),
-                                    );
-                                  }
-                                }
->>>>>>> 8db16abf5d6efd2df332e57337d7911f9144d35a
                               },
                               child: Container(
-                                height: 50,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFF1C2321),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
-                                ),
-                                child: const Center(
-                                  child: Text(
-                                    'Sign Up',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                  height: 50,
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xFF1C2321),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
                                   ),
-                                ),
-                              ),
+                                  child: const Center(
+                                    child: Text('Sign Up',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500,
+                                        )),
+                                  )),
                             ),
                           ),
                         ),

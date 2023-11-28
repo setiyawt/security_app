@@ -98,7 +98,7 @@ class CardExample extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ChartScreen(),
+                                builder: (context) => DetailSuhu(),
                               ),
                             );
                           },

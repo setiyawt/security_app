@@ -4,12 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:security_system/ui/history.dart';
 import 'package:security_system/ui/managesensor.dart';
 import 'package:security_system/ui/profile.dart';
-<<<<<<< HEAD
-
-=======
-import 'package:cloud_firestore/cloud_firestore.dart';
->>>>>>> 8db16abf5d6efd2df332e57337d7911f9144d35a
-import 'package:fl_chart/fl_chart.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -416,12 +410,12 @@ class _HomeState extends State<Home> {
                         child: Padding(
                           padding: EdgeInsets.only(top: 20, bottom: 5),
                           child: Column(
-                            children: [
-                              Expanded(
-                                child: RealtimeChart(),
+                              // children: [
+                              //   Expanded(
+                              //     child: RealtimeChart(),
+                              //   ),
+                              // ],
                               ),
-                            ],
-                          ),
                         ),
                       ),
                     ),
@@ -453,104 +447,6 @@ class _HomeState extends State<Home> {
         },
         animationDuration: const Duration(milliseconds: 300),
       ),
-    );
-  }
-}
-
-class RealtimeChart extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream:
-          FirebaseFirestore.instance.collection('7day-overview').snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
-        } else if (snapshot.hasError || snapshot.data == null) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          List<DocumentSnapshot> documents = snapshot.data!.docs;
-
-          double avgSuhu = calculateAverage(documents, 'suhu');
-          double avgGas = calculateAverage(documents, 'gas');
-          double avgFlame = calculateAverage(documents, 'flame');
-          double avgMotion = calculateAverage(documents, 'motion');
-
-          print('Average Suhu: $avgSuhu');
-          print('Average Gas: $avgGas');
-          print('Average Flame: $avgFlame');
-          print('Average Motion: $avgMotion');
-
-          // Use either createLineChart or sampleData based on your requirement
-          return LineChart(
-              createLineChart(avgSuhu, avgGas, avgFlame, avgMotion));
-          // or
-          // return LineChart(sampleData(spots));
-        }
-      },
-    );
-  }
-
-  double calculateAverage(List<DocumentSnapshot> documents, String field) {
-    double sum = 0;
-    int validDocumentsCount = 0;
-
-    documents.forEach((doc) {
-      final Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
-
-      if (data != null && data.containsKey(field)) {
-        sum += data[field];
-        validDocumentsCount++;
-      }
-    });
-
-    return validDocumentsCount > 0 ? sum / validDocumentsCount : 0;
-  }
-
-  LineChartData createLineChart(
-    double avgSuhu,
-    double avgGas,
-    double avgFlame,
-    double avgMotion,
-  ) {
-    List<FlSpot> spots = [
-      FlSpot(0, avgSuhu),
-      FlSpot(1, avgGas),
-      FlSpot(2, avgFlame),
-      FlSpot(3, avgMotion),
-    ];
-
-    return LineChartData(
-      lineBarsData: [
-        LineChartBarData(
-          spots: spots,
-          isCurved: true,
-          belowBarData: BarAreaData(show: false),
-          color: Colors.amber,
-        ),
-      ],
-      titlesData: FlTitlesData(
-        leftTitles: AxisTitles(),
-        bottomTitles: AxisTitles(),
-      ),
-      gridData: FlGridData(show: false),
-    );
-  }
-
-  LineChartData sampleData(List<FlSpot> spots) {
-    return LineChartData(
-      lineBarsData: [
-        LineChartBarData(
-          spots: spots,
-          isCurved: true,
-          belowBarData: BarAreaData(show: false),
-        ),
-      ],
-      titlesData: FlTitlesData(
-        leftTitles: AxisTitles(),
-        bottomTitles: AxisTitles(),
-      ),
-      gridData: FlGridData(show: false),
     );
   }
 }
