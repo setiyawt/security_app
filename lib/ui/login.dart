@@ -215,19 +215,22 @@ class _LoginState extends State<Login> {
                         });
                       },
                       child: Container(
-                          height: 50,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF1C2321),
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                        height: 50,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF1C2321),
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                          child: const Center(
-                            child: Text('Login',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                )),
-                          )),
+                        ),
+                      ),
                     ),
                   ),
                 ),

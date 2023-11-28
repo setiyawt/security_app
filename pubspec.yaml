@@ -41,9 +41,12 @@ dependencies:
   firebase_core: ^2.23.0
   firebase_auth: ^4.14.1
   cloud_firestore: ^4.13.2
+<<<<<<< HEAD
   http: ^1.1.0
   firebase_dynamic_links: ^5.4.5
   email_validator: ^2.1.17
+=======
+>>>>>>> 8db16abf5d6efd2df332e57337d7911f9144d35a
 
 flutter_native_splash:
   color: "#FFFFFF"
