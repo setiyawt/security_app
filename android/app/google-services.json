@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "288023014243",
+    "firebase_url": "https://securityapp-firebase-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "securityapp-firebase",
     "storage_bucket": "securityapp-firebase.appspot.com"
   },

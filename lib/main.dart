@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:security_system/ui/home.dart';
+
+// import 'package:security_system/ui/home.dart';
 import 'package:security_system/ui/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:security_system/ui/signup.dart';
+// import 'package:security_system/ui/signup.dart';
 import 'package:security_system/ui/verify_email.dart';
 
 final messengerKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await Firebase.initializeApp();
 
   runApp(const MyApp());
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       scaffoldMessengerKey: messengerKey,
       title: 'MyApp',
-      home: MainPage(),
+      home: Login(),
       debugShowCheckedModeBanner: false,
     );
   }

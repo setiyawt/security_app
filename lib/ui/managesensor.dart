@@ -16,7 +16,8 @@ class _ManageSensorState extends State<ManageSensor> {
     return Scaffold(
       backgroundColor: Color(0xFF5E6572),
       appBar: AppBar(
-        title: const Text('Manage Sensor'),
+        title: Text('Manage Sensor',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Color(0xFF1C2321),
         automaticallyImplyLeading: false,
