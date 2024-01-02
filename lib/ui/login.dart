@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:security_system/ui/api.dart';
 import 'package:security_system/ui/forgotpass.dart';
 import 'package:security_system/ui/home.dart';
 import 'package:security_system/ui/signup.dart';
@@ -21,7 +22,8 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome Back'),
+        title: Text('Welcome Back',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Color(0xFF1C2321),
         automaticallyImplyLeading: false,
@@ -129,7 +131,6 @@ class _LoginState extends State<Login> {
                 bottom: -50,
                 child: SizedBox(
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(width: 20),
                       TextButton(
@@ -173,6 +174,7 @@ class _LoginState extends State<Login> {
                             context,
                             MaterialPageRoute(builder: (context) => Home()),
                           );
+                          MyDataUploader().startUpload();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text("Login successful"),
@@ -238,7 +240,6 @@ class _LoginState extends State<Login> {
               Positioned(
                 bottom: 10,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       "Don't Have an Account?",
