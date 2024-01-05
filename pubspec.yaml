@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_native_splash: ^2.3.6
   curved_navigation_bar: ^1.0.3
-  fl_chart: ^0.64.0
+  fl_chart: ^0.66.0
   syncfusion_flutter_datepicker: ^23.1.44
   firebase_core: ^2.23.0
   firebase_auth: ^4.14.1
@@ -44,6 +44,11 @@ dependencies:
   email_validator: ^2.1.17
   http: ^1.1.0
   firebase_database: ^10.3.8
+  mqtt_client: ^10.0.1
+  dart_mqtt: ^1.0.4
+  web_socket_channel: ^2.4.0
+  mqtt5_client: ^4.0.4
+  provider: ^6.1.1
 
 flutter_native_splash:
   color: "#FFFFFF"

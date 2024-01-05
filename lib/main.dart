@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
-// import 'package:security_system/ui/home.dart';
+import 'package:provider/provider.dart';
+import 'package:security_system/ui/home.dart';
 import 'package:security_system/ui/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,7 +13,15 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  runApp(const MyApp());
+  runApp(
+      // MultiProvider(
+      //   providers: [
+      //     ChangeNotifierProvider(create: (_) => ChartData()),
+      //     ChangeNotifierProvider(create: (_) => MqttManager()),
+      //   ],
+      //   child: MyApp(),
+      // ),
+      MyApp());
 }
 
 class Utils {
