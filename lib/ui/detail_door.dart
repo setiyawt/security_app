@@ -3,17 +3,17 @@ import 'package:fl_chart/fl_chart.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class DetailSuhu extends StatefulWidget {
-  const DetailSuhu({super.key});
+class DetailDoor extends StatefulWidget {
+  const DetailDoor({super.key});
 
   @override
-  State<DetailSuhu> createState() => _DetailSuhuState();
+  State<DetailDoor> createState() => _DetailDoorState();
 }
 
 Future<List<FlSpot>> fetchData() async {
   try {
     final response = await http.get(Uri.parse(
-        'https://securityappitenas.000webhostapp.com/security-app/suhu7hari.php'));
+        'https://securityappitenas.000webhostapp.com/security-app/door7hari.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = json.decode(response.body);
@@ -22,10 +22,10 @@ Future<List<FlSpot>> fetchData() async {
 
       for (var i = 0; i < jsonData.length; i++) {
         // Assuming each item in jsonData is a Map with 'rata-rata suhu' key
-        final String temperatureString = jsonData[i]['rata-rata suhu'];
+        final String humidityString = jsonData[i]['rata-rata motion_detected'];
 
         // Convert string to double assuming it represents temperature
-        chartData.add(FlSpot(i.toDouble(), double.parse(temperatureString)));
+        chartData.add(FlSpot(i.toDouble(), double.parse(humidityString)));
       }
 
       return chartData;
@@ -40,12 +40,12 @@ Future<List<FlSpot>> fetchData() async {
   }
 }
 
-class _DetailSuhuState extends State<DetailSuhu> {
+class _DetailDoorState extends State<DetailDoor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Temperature Chart',
+        title: Text('Flame Chart',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: Color(0xFF1C2321),
         iconTheme: IconThemeData(color: Colors.white),
@@ -83,12 +83,12 @@ class ChartWidget extends StatelessWidget {
               minX: 0,
               maxX: snapshot.data!.length.toDouble() - 1,
               minY: 0,
-              maxY: 100,
+              maxY: 1.5,
               lineBarsData: [
                 LineChartBarData(
                   spots: snapshot.data!,
                   isCurved: true,
-                  color: Colors.yellow,
+                  color: Colors.green,
                   dotData: FlDotData(show: false),
                   belowBarData: BarAreaData(show: false),
                 ),

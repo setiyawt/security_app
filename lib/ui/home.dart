@@ -1,13 +1,16 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:security_system/ui/detail_door.dart';
+import 'package:security_system/ui/detail_flame.dart';
+import 'package:security_system/ui/detail_gas.dart';
+import 'package:security_system/ui/detail_suhu.dart';
 import 'package:security_system/ui/history.dart';
 import 'package:security_system/ui/managesensor.dart';
 import 'package:security_system/ui/profile.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
-//import 'package:provider/provider.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:security_system/ui/realtime.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -24,8 +27,6 @@ class _HomeState extends State<Home> {
   late String flame = '0';
   late String door = '0';
 
-  List<Map<String, dynamic>> data = [];
-
   final items = const [
     Icon(Icons.home, size: 25),
     Icon(Icons.settings_applications, size: 25),
@@ -39,7 +40,6 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     mqttManager = MqttManager();
-
     mqttManager.connect().then((result) {
       if (result is int && result == -1) {
         // Handle connection failure if needed
@@ -158,7 +158,7 @@ class _HomeState extends State<Home> {
                                       Text(
                                         temperature + '°C',
                                         style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 12,
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -187,28 +187,31 @@ class _HomeState extends State<Home> {
                                             : Colors.green,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        humidity + ' %RH',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
+                                  child: IntrinsicHeight(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          humidity + '%RH',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        'Humidity',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.white,
+                                        SizedBox(
+                                          height: 10,
                                         ),
-                                      ),
-                                    ],
+                                        Text(
+                                          'Humidity',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 Container(
@@ -252,7 +255,7 @@ class _HomeState extends State<Home> {
                                   height: 60,
                                   margin: EdgeInsets.only(left: 5, right: 10),
                                   decoration: BoxDecoration(
-                                    color: (double.tryParse(door) ?? 0.0) > 0.0
+                                    color: (double.tryParse(door) ?? 0.0) <= 1
                                         ? Colors.red
                                         : Colors.green,
                                     borderRadius: BorderRadius.circular(10),
@@ -261,7 +264,7 @@ class _HomeState extends State<Home> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        double.tryParse(door) == 1.0
+                                        double.tryParse(door) == 0.0
                                             ? 'Open'
                                             : 'Close',
                                         style: TextStyle(
@@ -321,8 +324,8 @@ class _HomeState extends State<Home> {
                                                 (double.tryParse(humidity) ??
                                                         0.0) >
                                                     50 ||
-                                                double.tryParse(flame) == 1 &&
-                                                    double.tryParse(door) == 1
+                                                double.tryParse(flame) == 1 ||
+                                                double.tryParse(door) == 1
                                             ? 'DANGER!'
                                             : 'SAFE',
                                         style: TextStyle(
@@ -335,8 +338,8 @@ class _HomeState extends State<Home> {
                                                   (double.tryParse(humidity) ??
                                                           0.0) >
                                                       50 ||
-                                                  double.tryParse(flame) == 1 &&
-                                                      double.tryParse(door) == 1
+                                                  double.tryParse(flame) == 1 ||
+                                                  double.tryParse(door) == 1
                                               ? Colors.red
                                               : Colors.green,
                                         ),
@@ -375,19 +378,47 @@ class _HomeState extends State<Home> {
                           child: Padding(
                             padding: EdgeInsets.only(
                                 top: 5, bottom: 5, left: 10, right: 5),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Color(0xFF1C2321),
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color.fromARGB(255, 82, 81, 81)
-                                        .withOpacity(0.2),
-                                    spreadRadius: 2,
-                                    blurRadius: 5,
-                                    offset: Offset(0, 3),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailSuhu(),
                                   ),
-                                ],
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Color(0xFF1C2321),
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color.fromARGB(255, 82, 81, 81)
+                                          .withOpacity(0.2),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.thermostat_auto_outlined,
+                                      color: Colors.blue,
+                                      size: 40,
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text(
+                                      'Temp',
+                                      style: TextStyle(
+                                        color: Colors.blue,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -398,19 +429,47 @@ class _HomeState extends State<Home> {
                           child: Padding(
                             padding: EdgeInsets.only(
                                 top: 5, bottom: 5, left: 10, right: 5),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Color(0xFF1C2321),
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color.fromARGB(255, 82, 81, 81)
-                                        .withOpacity(0.2),
-                                    spreadRadius: 2,
-                                    blurRadius: 5,
-                                    offset: Offset(0, 3),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailGas(),
                                   ),
-                                ],
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Color(0xFF1C2321),
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color.fromARGB(255, 82, 81, 81)
+                                          .withOpacity(0.2),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.water_drop_outlined,
+                                      color: Colors.green,
+                                      size: 40,
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text(
+                                      'Humidity',
+                                      style: TextStyle(
+                                        color: Colors.green,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -421,19 +480,47 @@ class _HomeState extends State<Home> {
                           child: Padding(
                             padding: EdgeInsets.only(
                                 top: 5, bottom: 5, left: 10, right: 5),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Color(0xFF1C2321),
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color.fromARGB(255, 82, 81, 81)
-                                        .withOpacity(0.2),
-                                    spreadRadius: 2,
-                                    blurRadius: 5,
-                                    offset: Offset(0, 3),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailFlame(),
                                   ),
-                                ],
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Color(0xFF1C2321),
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color.fromARGB(255, 82, 81, 81)
+                                          .withOpacity(0.2),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.fireplace_outlined,
+                                      color: Colors.orange,
+                                      size: 40,
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text(
+                                      'Flame',
+                                      style: TextStyle(
+                                        color: Colors.orange,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -444,19 +531,47 @@ class _HomeState extends State<Home> {
                           child: Padding(
                             padding: EdgeInsets.only(
                                 top: 5, bottom: 5, left: 10, right: 5),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Color(0xFF1C2321),
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color.fromARGB(255, 82, 81, 81)
-                                        .withOpacity(0.2),
-                                    spreadRadius: 2,
-                                    blurRadius: 5,
-                                    offset: Offset(0, 3),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailDoor(),
                                   ),
-                                ],
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Color(0xFF1C2321),
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color.fromARGB(255, 82, 81, 81)
+                                          .withOpacity(0.2),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.lock_open_rounded,
+                                      color: Colors.purple,
+                                      size: 40,
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text(
+                                      'Door',
+                                      style: TextStyle(
+                                        color: Colors.purple,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -478,13 +593,13 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   Container(
-                    height: 300,
+                    height: 170,
                     child: Padding(
                       padding: EdgeInsets.only(
                           top: 5, bottom: 5, left: 10, right: 10),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 237, 250, 246),
+                          color: Color.fromARGB(255, 255, 255, 255),
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
@@ -499,12 +614,12 @@ class _HomeState extends State<Home> {
                         child: Padding(
                           padding: EdgeInsets.only(top: 20, bottom: 5),
                           child: Column(
-                              // children: [
-                              //   Expanded(
-                              //     child: MyChartWidget(),
-                              //   ),
-                              // ],
+                            children: [
+                              Expanded(
+                                child: RealtimeWidget(),
                               ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -546,12 +661,10 @@ class MqttManager with ChangeNotifier {
   final ValueNotifier<String> flameData = ValueNotifier<String>("");
   final ValueNotifier<String> doorData = ValueNotifier<String>("");
   late MqttServerClient client;
-  //late ChartData chartData;
 
   Future<Object> connect() async {
-    //chartData = ChartData();
     client = MqttServerClient.withPort(
-        'broker.hivemq.com', '62863b68-5e47-46ff-92da-97c291e49c3d', 1883);
+        'broker.hivemq.com', '6e02c2e3-0105-46fb-98d4-b1b32bc25480', 1883);
     client.logging(on: true);
     client.onConnected = onConnected;
     client.onDisconnected = onDisconnected;
@@ -591,37 +704,30 @@ class MqttManager with ChangeNotifier {
     }
 
     print('MQTT_LOGS::Subscribing to the test/lol topic');
-    const topicTemperature = 'asharilabs/suhu';
+    const topicTemperature = 'IOT-SECURITY DD SUHU';
     const topicHumidity = 'IOT-SECURITY DD KELEMBAPAN';
-    const topicFlame = 'IOT-SECURITY DD SENSOR API';
-    const topicDoor = 'IOT-SECURITY DD SENSOR PINTU';
+    const topicGas = 'IOT-SECURITY DD SENSOR API';
+    const topicMotion = 'IOT-SECURITY DD SENSOR PINTU';
 
     client.subscribe(topicTemperature, MqttQos.atMostOnce);
     client.subscribe(topicHumidity, MqttQos.atMostOnce);
-    client.subscribe(topicFlame, MqttQos.atMostOnce);
-    client.subscribe(topicDoor, MqttQos.atMostOnce);
+    client.subscribe(topicGas, MqttQos.atMostOnce);
+    client.subscribe(topicMotion, MqttQos.atMostOnce);
 
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
       final recMess = c![0].payload as MqttPublishMessage;
       final pt =
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
       String topic = c[0].topic;
-      print('Received data - Topic: $topic, Payload: $pt');
       if (topic == topicTemperature) {
         datatemperature.value = pt;
-        //chartData.updateChartData('temperature:$pt');
       } else if (topic == topicHumidity) {
         humidityData.value = pt;
-        //chartData.updateChartData('humidity:$pt');
-      } else if (topic == topicFlame) {
+      } else if (topic == topicGas) {
         flameData.value = pt;
-        //chartData.updateChartData('flame:$pt');
-      } else if (topic == topicDoor) {
+      } else if (topic == topicMotion) {
         doorData.value = pt;
-        //chartData.updateChartData('door:$pt');
       }
-      final f1score = extractF1Score(pt);
-      //chartData.updateChartData('f1score:$f1score');
       notifyListeners();
       print(
           'MQTT_LOGS:: New data arrived: topic is <${c[0].topic}>, payload is $pt');
@@ -629,21 +735,6 @@ class MqttManager with ChangeNotifier {
     });
 
     return client;
-  }
-
-  double extractF1Score(String payload) {
-    try {
-      final dataMap = Map.fromIterable(
-        payload.split(','),
-        key: (item) => item.split(':')[0],
-        value: (item) => double.tryParse(item.split(':')[1]) ?? 0.0,
-      );
-
-      return dataMap['f1score'] ?? 0.0;
-    } catch (e) {
-      print('Error extracting F1 score: $e');
-      return 0.0;
-    }
   }
 
   void onConnected() {
@@ -671,24 +762,24 @@ class MqttManager with ChangeNotifier {
   }
 
   void publishMessage(String message) {
-    const topicSuhu = 'asharilabs/suhu/connection';
+    const topicsuhu = 'IOT-SECURITY DD SUHU/connection';
     const topicHumidity = 'IOT-SECURITY DD KELEMBAPAN/connection';
-    const topicFlame = 'IOT-SECURITY DD SENSOR API/connection';
-    const topicPintu = 'IOT-SECURITY DD SENSOR PINTU/connection';
+    const topicGas = 'IOT-SECURITY DD SENSOR API/connection';
+    const topicMotion = 'IOT-SECURITY DD SENSOR PINTU/connectioN';
     final builder = MqttClientPayloadBuilder();
     builder.addString(message);
 
     if (client.connectionStatus?.state == MqttConnectionState.connected) {
-      client.publishMessage(topicSuhu, MqttQos.atMostOnce, builder.payload!);
+      client.publishMessage(topicsuhu, MqttQos.atMostOnce, builder.payload!);
     } else if (client.connectionStatus?.state ==
         MqttConnectionState.connected) {
       client.publishMessage(
           topicHumidity, MqttQos.atMostOnce, builder.payload!);
     } else if (client.connectionStatus?.state ==
         MqttConnectionState.connected) {
-      client.publishMessage(topicFlame, MqttQos.atMostOnce, builder.payload!);
+      client.publishMessage(topicGas, MqttQos.atMostOnce, builder.payload!);
     } else {
-      client.publishMessage(topicPintu, MqttQos.atMostOnce, builder.payload!);
+      client.publishMessage(topicMotion, MqttQos.atMostOnce, builder.payload!);
     }
   }
 
@@ -701,101 +792,3 @@ class MqttManager with ChangeNotifier {
     super.dispose();
   }
 }
-
-// class ChartData extends ChangeNotifier {
-//   List<double> temperature = [];
-//   List<double> humidity = [];
-//   List<double> flame = [];
-//   List<double> door = [];
-
-//   void updateChartData(String data) {
-//     try {
-//       final dataMap = Map.fromIterable(
-//         data.split(','),
-//         key: (item) => item.split(':')[0],
-//         value: (item) => double.tryParse(item.split(':')[1]) ?? 0.0,
-//       );
-
-//       temperature.add(dataMap['temperature'] ?? 0.0);
-//       humidity.add(dataMap['humidity'] ?? 0.0);
-//       flame.add(dataMap['flame'] ?? 0.0);
-//       door.add(dataMap['door'] ?? 0.0);
-
-//       print('Temperature: $temperature');
-//       print('Humidity: $humidity');
-//       print('Flame: $flame');
-//       print('Door: $door');
-
-//       notifyListeners();
-//     } catch (e) {
-//       print('Error updating chart data: $e');
-//     }
-//   }
-// }
-
-// class MyChartWidget extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     try {
-//       //final chartData = Provider.of<ChartData>(context);
-
-//       return LineChart(
-//         LineChartData(
-//           gridData: FlGridData(show: false),
-//           titlesData: FlTitlesData(
-//             rightTitles: AxisTitles(
-//               sideTitles: SideTitles(
-//                 showTitles: true,
-//                 getTitlesWidget: leftTitleWidgets,
-//               ),
-//             ),
-//           ),
-//           borderData: FlBorderData(
-//             show: true,
-//             border: Border.all(
-//               color: const Color(0xff37434d),
-//               width: 1,
-//             ),
-//           ),
-//           minX: 0,
-//           maxX: chartData.temperature.length.toDouble() - 1,
-//           minY: 0,
-//           maxY: 100, // Adjust the maximum value based on your data range
-//           lineBarsData: [
-//             _buildLineChartBar(
-//                 chartData.temperature, Colors.red, "Temperature"),
-//             _buildLineChartBar(chartData.humidity, Colors.blue, "Humidity"),
-//             _buildLineChartBar(chartData.flame, Colors.orange, "Flame"),
-//             _buildLineChartBar(chartData.door, Colors.green, "Door"),
-//           ],
-//         ),
-//       );
-//     } catch (e) {
-//       print('Error building chart widget: $e');
-//       // You might want to return a placeholder or an error message widget here
-//       return Container();
-//     }
-//   }
-
-//   LineChartBarData _buildLineChartBar(
-//       List<double> data, Color color, String title) {
-//     try {
-//       return LineChartBarData(
-//         spots: List.generate(
-//           data.length,
-//           (index) => FlSpot(index.toDouble(), data[index]),
-//         ),
-//         isCurved: true,
-//         color: color,
-//         dotData: FlDotData(show: false),
-//         belowBarData: BarAreaData(show: false),
-//         aboveBarData: BarAreaData(show: false),
-//         barWidth: 2,
-//       );
-//     } catch (e) {
-//       print('Error building LineChartBar: $e');
-//       // You might want to return a placeholder or an error message widget here
-//       return LineChartBarData();
-//     }
-//   }
-// }

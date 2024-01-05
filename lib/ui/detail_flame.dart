@@ -1,165 +1,102 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class DetailFlame extends StatefulWidget {
-  const DetailFlame({Key? key}) : super(key: key);
+  const DetailFlame({super.key});
 
   @override
-  _DetailFlameState createState() => _DetailFlameState();
+  State<DetailFlame> createState() => _DetailFlameState();
+}
+
+Future<List<FlSpot>> fetchData() async {
+  try {
+    final response = await http.get(Uri.parse(
+        'https://securityappitenas.000webhostapp.com/security-app/flame7hari.php'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = json.decode(response.body);
+
+      final List<FlSpot> chartData = [];
+
+      for (var i = 0; i < jsonData.length; i++) {
+        // Assuming each item in jsonData is a Map with 'rata-rata suhu' key
+        final String humidityString = jsonData[i]['rata-rata flame'];
+
+        // Convert string to double assuming it represents temperature
+        chartData.add(FlSpot(i.toDouble(), double.parse(humidityString)));
+      }
+
+      return chartData;
+    } else {
+      print('API Request Error - Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+      return []; // Return an empty list when there is an error
+    }
+  } catch (error) {
+    print('Error: $error');
+    return []; // Return an empty list when there is an exception
+  }
 }
 
 class _DetailFlameState extends State<DetailFlame> {
-  List<Map<String, dynamic>> data = [];
-  String _range = 'Select Date Range';
-  late DateTime selectedDate = DateTime.now(); // Initialize selectedDate
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTimeRange? picked = await showDateRangePicker(
-      context: context,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2025),
-    );
-
-    if (picked != null) {
-      // Adjust the end date by adding one day to include the whole selected day
-      DateTime adjustedEndDate = picked.end.add(Duration(days: 1));
-
-      setState(() {
-        if (picked.start == picked.end) {
-          _range = DateFormat('dd/MM/yyyy').format(picked.start);
-        } else {
-          _range =
-              '${DateFormat('dd/MM/yyyy').format(picked.start)} - ${DateFormat('dd/MM/yyyy').format(picked.end)}';
-        }
-        selectedDate = picked.start;
-        fetchData(selectedDate, adjustedEndDate);
-      });
-    }
-  }
-
-  Future<void> fetchData(DateTime startDate, DateTime endDate) async {
-    try {
-      CollectionReference dataCollection =
-          FirebaseFirestore.instance.collection('7day-overview');
-
-      QuerySnapshot dataQuerySnapshot = await dataCollection
-          .where('time', isGreaterThanOrEqualTo: startDate)
-          .where('time', isLessThan: endDate)
-          .get();
-
-      setState(() {
-        data = dataQuerySnapshot.docs
-            .map((DocumentSnapshot document) =>
-                Map<String, dynamic>.from(document.data() as Map))
-            .toList();
-      });
-    } catch (e) {
-      print('Error fetching data: $e');
-      // Handle error accordingly
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chart Example'),
+        title: Text('Flame Chart',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: Color(0xFF1C2321),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
-      body: Container(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  '$_range',
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ChartWidget(),
+      ),
+    );
+  }
+}
+
+class ChartWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<FlSpot>>(
+      future: fetchData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError || snapshot.data == null) {
+          return Text('Error: Failed to load data');
+        } else {
+          return LineChart(
+            LineChartData(
+              gridData: FlGridData(show: true),
+              titlesData: FlTitlesData(show: true),
+              borderData: FlBorderData(
+                show: true,
+                border: Border.all(
+                  color: const Color(0xff37434d),
+                  width: 1,
                 ),
-                ElevatedButton(
-                  onPressed: () => _selectDate(context),
-                  child: Text('Select Date Range'),
+              ),
+              minX: 0,
+              maxX: snapshot.data!.length.toDouble() - 1,
+              minY: 0,
+              maxY: 1.5,
+              lineBarsData: [
+                LineChartBarData(
+                  spots: snapshot.data!,
+                  isCurved: true,
+                  color: Colors.green,
+                  dotData: FlDotData(show: false),
+                  belowBarData: BarAreaData(show: false),
                 ),
               ],
             ),
-            Divider(
-              height: 1,
-              color: Colors.black,
-              thickness: 1,
-              indent: 5,
-              endIndent: 90,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: LineChart(
-                  LineChartData(
-                    lineBarsData: [
-                      LineChartBarData(
-                        spots: [
-                          for (int j = 0; j < data.length; j++)
-                            FlSpot(
-                              j.toDouble(),
-                              (data[j]['Temp'] ?? 0.0).toDouble(),
-                            ),
-                        ],
-                        isCurved: true,
-                        color: Colors.blue,
-                        barWidth: 4,
-                        belowBarData: BarAreaData(show: false),
-                      ),
-                      LineChartBarData(
-                        spots: [
-                          for (int j = 0; j < data.length; j++)
-                            FlSpot(
-                              j.toDouble(),
-                              (data[j]['Gas'] ?? 0.0).toDouble(),
-                            ),
-                        ],
-                        isCurved: true,
-                        color: Colors.green,
-                        barWidth: 4,
-                        belowBarData: BarAreaData(show: false),
-                      ),
-                      LineChartBarData(
-                        spots: [
-                          for (int j = 0; j < data.length; j++)
-                            FlSpot(
-                              j.toDouble(),
-                              (data[j]['Flame'] ?? 0.0).toDouble(),
-                            ),
-                        ],
-                        isCurved: true,
-                        color: Colors.orange,
-                        barWidth: 4,
-                        belowBarData: BarAreaData(show: false),
-                      ),
-                      LineChartBarData(
-                        spots: [
-                          for (int j = 0; j < data.length; j++)
-                            FlSpot(
-                              j.toDouble(),
-                              (data[j]['Motion'] ?? 0.0).toDouble(),
-                            ),
-                        ],
-                        isCurved: true,
-                        color: Colors.pink,
-                        barWidth: 4,
-                        belowBarData: BarAreaData(show: false),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+          );
+        }
+      },
     );
   }
 }

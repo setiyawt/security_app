@@ -1,117 +1,102 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class DetailGas extends StatefulWidget {
-  const DetailGas({Key? key}) : super(key: key);
+  const DetailGas({super.key});
 
   @override
-  _DetailGasState createState() => _DetailGasState();
+  State<DetailGas> createState() => _DetailGasState();
+}
+
+Future<List<FlSpot>> fetchData() async {
+  try {
+    final response = await http.get(Uri.parse(
+        'https://securityappitenas.000webhostapp.com/security-app/humidity7hari.php'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = json.decode(response.body);
+
+      final List<FlSpot> chartData = [];
+
+      for (var i = 0; i < jsonData.length; i++) {
+        // Assuming each item in jsonData is a Map with 'rata-rata suhu' key
+        final String humidityString = jsonData[i]['rata-rata humidity'];
+
+        // Convert string to double assuming it represents temperature
+        chartData.add(FlSpot(i.toDouble(), double.parse(humidityString)));
+      }
+
+      return chartData;
+    } else {
+      print('API Request Error - Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+      return []; // Return an empty list when there is an error
+    }
+  } catch (error) {
+    print('Error: $error');
+    return []; // Return an empty list when there is an exception
+  }
 }
 
 class _DetailGasState extends State<DetailGas> {
-  List<Map<String, dynamic>> data = [];
-
-  @override
-  void initState() {
-    super.initState();
-    fetchData();
-  }
-
-  Future<void> fetchData() async {
-    try {
-      CollectionReference dataCollection =
-          FirebaseFirestore.instance.collection('7day-overview');
-
-      QuerySnapshot dataQuerySnapshot = await dataCollection.get();
-
-      setState(() {
-        data = dataQuerySnapshot.docs
-            .map((DocumentSnapshot document) =>
-                Map<String, dynamic>.from(document.data() as Map))
-            .toList();
-      });
-    } catch (e) {
-      print('Error fetching data: $e');
-      // Handle error accordingly
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Chart Example',
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
+        title: Text('Humidity Chart',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: Color(0xFF1C2321),
         iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: LineChart(
-          LineChartData(
-            lineBarsData: [
-              LineChartBarData(
-                spots: [
-                  for (int j = 0; j < data.length; j++)
-                    FlSpot(
-                      j.toDouble(),
-                      data[j]['Temp'].toDouble(),
-                    ),
-                ],
-                isCurved: true,
-                color: Colors.blue, // Warna untuk data suhu
-                barWidth: 4,
-                belowBarData: BarAreaData(show: false),
-              ),
-              LineChartBarData(
-                spots: [
-                  for (int j = 0; j < data.length; j++)
-                    FlSpot(
-                      j.toDouble(),
-                      data[j]['Gas'].toDouble(),
-                    ),
-                ],
-                isCurved: true,
-                color: Colors.green, // Warna untuk data kelembaban
-                barWidth: 4,
-                belowBarData: BarAreaData(show: false),
-              ),
-              LineChartBarData(
-                spots: [
-                  for (int j = 0; j < data.length; j++)
-                    FlSpot(
-                      j.toDouble(),
-                      data[j]['Flame'].toDouble(),
-                    ),
-                ],
-                isCurved: true,
-                color: Colors.orange, // Warna untuk data kelembaban
-                barWidth: 4,
-                belowBarData: BarAreaData(show: false),
-              ),
-              LineChartBarData(
-                spots: [
-                  for (int j = 0; j < data.length; j++)
-                    FlSpot(
-                      j.toDouble(),
-                      data[j]['Motion'].toDouble(),
-                    ),
-                ],
-                isCurved: true,
-                color: Colors.pink, // Warna untuk data kelembaban
-                barWidth: 4,
-                belowBarData: BarAreaData(show: false),
-              ),
-            ],
-            // Konfigurasi lainnya seperti borderData, gridData, dan titlesData
-          ),
-        ),
+        child: ChartWidget(),
       ),
+    );
+  }
+}
+
+class ChartWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<FlSpot>>(
+      future: fetchData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError || snapshot.data == null) {
+          return Text('Error: Failed to load data');
+        } else {
+          return LineChart(
+            LineChartData(
+              gridData: FlGridData(show: true),
+              titlesData: FlTitlesData(show: true),
+              borderData: FlBorderData(
+                show: true,
+                border: Border.all(
+                  color: const Color(0xff37434d),
+                  width: 1,
+                ),
+              ),
+              minX: 0,
+              maxX: snapshot.data!.length.toDouble() - 1,
+              minY: 0,
+              maxY: 100,
+              lineBarsData: [
+                LineChartBarData(
+                  spots: snapshot.data!,
+                  isCurved: true,
+                  color: Colors.green,
+                  dotData: FlDotData(show: false),
+                  belowBarData: BarAreaData(show: false),
+                ),
+              ],
+            ),
+          );
+        }
+      },
     );
   }
 }

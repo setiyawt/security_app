@@ -49,6 +49,7 @@ dependencies:
   web_socket_channel: ^2.4.0
   mqtt5_client: ^4.0.4
   provider: ^6.1.1
+  intl: ^0.18.1
 
 flutter_native_splash:
   color: "#FFFFFF"

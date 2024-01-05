@@ -17,18 +17,13 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       backgroundColor: Color(0xFF5E6572),
       appBar: AppBar(
-          title: Text("Profile"),
-          centerTitle: true,
-          backgroundColor: Color(0xFF1C2321),
-          elevation: 0,
-          automaticallyImplyLeading: false),
+        title: Text('Profile',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        centerTitle: true,
+        backgroundColor: Color(0xFF1C2321),
+        automaticallyImplyLeading: false,
+      ),
       body: Container(
-        // decoration: BoxDecoration(
-        //   image: DecorationImage(
-        //     image: AssetImage("assets/bg2.png"),
-        //     fit: BoxFit.cover,
-        //   ),
-        // ),
         child: Column(children: [
           Padding(
             padding:

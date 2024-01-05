@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:security_system/ui/detail_door.dart';
 import 'package:security_system/ui/detail_flame.dart';
 import 'package:security_system/ui/detail_gas.dart';
 import 'package:security_system/ui/detail_suhu.dart';
@@ -48,14 +49,14 @@ class CardExample extends StatelessWidget {
                     ListTile(
                       leading: Icon(
                         Icons.thermostat_auto_outlined,
-                        color: Colors.lightBlue,
+                        color: Colors.blue,
                         size: 50,
                       ),
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Temperature Detection',
+                            'Temperature Chart',
                             style: TextStyle(
                                 color: Color(0xFFE07242),
                                 fontWeight: FontWeight.bold),
@@ -64,7 +65,7 @@ class CardExample extends StatelessWidget {
                         ],
                       ),
                       subtitle: Text(
-                        'Music by Julie Gable. Lyrics by Sidney Stein.',
+                        'Look for the "7-Day Temperature Chart" section.',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w300,
@@ -78,7 +79,7 @@ class CardExample extends StatelessWidget {
                           'DHT\nSensor',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.lightBlue,
+                            color: Colors.blue,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
@@ -121,15 +122,15 @@ class CardExample extends StatelessWidget {
                   children: <Widget>[
                     ListTile(
                       leading: Icon(
-                        Icons.local_gas_station_outlined,
-                        color: Colors.grey,
+                        Icons.water_drop_outlined,
+                        color: Colors.green,
                         size: 50,
                       ),
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Gas Detection',
+                            'Humadity Chart',
                             style: TextStyle(
                                 color: Color(0xFFE07242),
                                 fontWeight: FontWeight.bold),
@@ -138,7 +139,7 @@ class CardExample extends StatelessWidget {
                         ],
                       ),
                       subtitle: Text(
-                        'Music by Julie Gable. Lyrics by Sidney Stein.',
+                        'Look for the "7-Day Humidity Chart" section.',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w300,
@@ -149,10 +150,10 @@ class CardExample extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
                         Text(
-                          'MQ2\nSensor',
+                          'DHT\nSensor',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey,
+                            color: Colors.green,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
@@ -198,14 +199,14 @@ class CardExample extends StatelessWidget {
                     ListTile(
                       leading: Icon(
                         Icons.fireplace_outlined,
-                        color: Colors.red,
+                        color: Colors.orange,
                         size: 50,
                       ),
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Flame Detection',
+                            'Flame Chart',
                             style: TextStyle(
                                 color: Color(0xFFE07242),
                                 fontWeight: FontWeight.bold),
@@ -214,7 +215,7 @@ class CardExample extends StatelessWidget {
                         ],
                       ),
                       subtitle: Text(
-                        'Music by Julie Gable. Lyrics by Sidney Stein.',
+                        'Look for the "7-Day Flame Chart" section.',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w300,
@@ -228,7 +229,7 @@ class CardExample extends StatelessWidget {
                           'Flame\nSensor',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.red,
+                            color: Colors.orange,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
@@ -273,15 +274,15 @@ class CardExample extends StatelessWidget {
                   children: <Widget>[
                     ListTile(
                       leading: Icon(
-                        Icons.moving_outlined,
-                        color: Colors.amber,
+                        Icons.lock_open_rounded,
+                        color: Colors.purple,
                         size: 50,
                       ),
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Motion Detection',
+                            'Door Sensor Chart',
                             style: TextStyle(
                                 color: Color(0xFFE07242),
                                 fontWeight: FontWeight.bold),
@@ -290,7 +291,7 @@ class CardExample extends StatelessWidget {
                         ],
                       ),
                       subtitle: Text(
-                        'Music by Julie Gable. Lyrics by Sidney Stein.',
+                        'Look for the "7-Day Door sensor Chart" section.',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w300,
@@ -301,10 +302,10 @@ class CardExample extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
                         Text(
-                          'PIR\nSensor',
+                          'Door\nSensor',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.amber,
+                            color: Colors.purple,
                             fontWeight: FontWeight.bold,
                           ),
                           textAlign: TextAlign.center,
@@ -321,7 +322,14 @@ class CardExample extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          onPressed: () {/* ... */},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DetailDoor(),
+                              ),
+                            );
+                          },
                         ),
                         const SizedBox(width: 8),
                       ],
