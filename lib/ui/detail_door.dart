@@ -21,10 +21,7 @@ Future<List<FlSpot>> fetchData() async {
       final List<FlSpot> chartData = [];
 
       for (var i = 0; i < jsonData.length; i++) {
-        // Assuming each item in jsonData is a Map with 'rata-rata suhu' key
         final String humidityString = jsonData[i]['rata-rata motion_detected'];
-
-        // Convert string to double assuming it represents temperature
         chartData.add(FlSpot(i.toDouble(), double.parse(humidityString)));
       }
 
@@ -32,11 +29,11 @@ Future<List<FlSpot>> fetchData() async {
     } else {
       print('API Request Error - Status Code: ${response.statusCode}');
       print('Response Body: ${response.body}');
-      return []; // Return an empty list when there is an error
+      return [];
     }
   } catch (error) {
     print('Error: $error');
-    return []; // Return an empty list when there is an exception
+    return [];
   }
 }
 
@@ -45,7 +42,7 @@ class _DetailDoorState extends State<DetailDoor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flame Chart',
+        title: Text('Door Chart',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: Color(0xFF1C2321),
         iconTheme: IconThemeData(color: Colors.white),
@@ -88,7 +85,7 @@ class ChartWidget extends StatelessWidget {
                 LineChartBarData(
                   spots: snapshot.data!,
                   isCurved: true,
-                  color: Colors.green,
+                  color: Colors.purple,
                   dotData: FlDotData(show: false),
                   belowBarData: BarAreaData(show: false),
                 ),

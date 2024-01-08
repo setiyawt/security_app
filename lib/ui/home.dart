@@ -41,12 +41,9 @@ class _HomeState extends State<Home> {
     super.initState();
     mqttManager = MqttManager();
     mqttManager.connect().then((result) {
-      if (result is int && result == -1) {
-        // Handle connection failure if needed
-      }
+      if (result is int && result == -1) {}
     });
 
-    // Listen to changes in temperature value
     mqttManager.datatemperature.addListener(() {
       setState(() {
         temperature = mqttManager.datatemperature.value;
@@ -138,6 +135,9 @@ class _HomeState extends State<Home> {
                         child: Column(
                           children: [
                             Row(
+                              mainAxisAlignment: MainAxisAlignment
+                                  .center, // Center horizontally
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Container(
                                   width: 60,
@@ -182,9 +182,9 @@ class _HomeState extends State<Home> {
                                   margin: EdgeInsets.only(left: 5, right: 5),
                                   decoration: BoxDecoration(
                                     color:
-                                        (double.tryParse(humidity) ?? 0.0) > 50
-                                            ? Colors.red
-                                            : Colors.green,
+                                        (double.tryParse(humidity) ?? 0.0) < 80
+                                            ? Colors.green
+                                            : Colors.red,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: IntrinsicHeight(
@@ -255,16 +255,16 @@ class _HomeState extends State<Home> {
                                   height: 60,
                                   margin: EdgeInsets.only(left: 5, right: 10),
                                   decoration: BoxDecoration(
-                                    color: (double.tryParse(door) ?? 0.0) <= 1
-                                        ? Colors.red
-                                        : Colors.green,
+                                    color: (double.tryParse(door) ?? 0.0) <= 0
+                                        ? Colors.green
+                                        : Colors.red,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        double.tryParse(door) == 0.0
+                                        double.tryParse(door) == 1.0
                                             ? 'Open'
                                             : 'Close',
                                         style: TextStyle(
@@ -323,7 +323,7 @@ class _HomeState extends State<Home> {
                                                     45 ||
                                                 (double.tryParse(humidity) ??
                                                         0.0) >
-                                                    50 ||
+                                                    80 ||
                                                 double.tryParse(flame) == 1 ||
                                                 double.tryParse(door) == 1
                                             ? 'DANGER!'
@@ -337,7 +337,7 @@ class _HomeState extends State<Home> {
                                                       45 ||
                                                   (double.tryParse(humidity) ??
                                                           0.0) >
-                                                      50 ||
+                                                      80 ||
                                                   double.tryParse(flame) == 1 ||
                                                   double.tryParse(door) == 1
                                               ? Colors.red
@@ -593,7 +593,7 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   Container(
-                    height: 170,
+                    height: 400,
                     child: Padding(
                       padding: EdgeInsets.only(
                           top: 5, bottom: 5, left: 10, right: 10),
@@ -675,7 +675,6 @@ class MqttManager with ChangeNotifier {
     client.keepAlivePeriod = 60;
     client.logging(on: true);
 
-    /// Set the correct MQTT protocol for mosquito
     client.setProtocolV311();
 
     final connMessage = MqttConnectMessage()

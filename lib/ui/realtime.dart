@@ -39,11 +39,11 @@ Future<Map<String, List<FlSpot>>> fetchData() async {
     } else {
       print('API Request Error - Status Code: ${response.statusCode}');
       print('Response Body: ${response.body}');
-      return {}; // Return an empty map when there is an error
+      return {};
     }
   } catch (error) {
     print('Error: $error');
-    return {}; // Return an empty map when there is an error
+    return {};
   }
 }
 
@@ -75,9 +75,9 @@ class RealtimeWidget extends StatelessWidget {
               maxY: 100,
               lineBarsData: [
                 _buildLineChartBarData(
-                    snapshot.data!['temperature']!, Colors.green),
+                    snapshot.data!['temperature']!, Colors.blue),
                 _buildLineChartBarData(
-                    snapshot.data!['humidity']!, Colors.blue),
+                    snapshot.data!['humidity']!, Colors.green),
                 _buildLineChartBarData(snapshot.data!['flame']!, Colors.orange),
                 _buildLineChartBarData(
                     snapshot.data!['motion_detected']!, Colors.purple),

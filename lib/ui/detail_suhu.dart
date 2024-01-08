@@ -21,10 +21,7 @@ Future<List<FlSpot>> fetchData() async {
       final List<FlSpot> chartData = [];
 
       for (var i = 0; i < jsonData.length; i++) {
-        // Assuming each item in jsonData is a Map with 'rata-rata suhu' key
         final String temperatureString = jsonData[i]['rata-rata suhu'];
-
-        // Convert string to double assuming it represents temperature
         chartData.add(FlSpot(i.toDouble(), double.parse(temperatureString)));
       }
 
@@ -32,11 +29,11 @@ Future<List<FlSpot>> fetchData() async {
     } else {
       print('API Request Error - Status Code: ${response.statusCode}');
       print('Response Body: ${response.body}');
-      return []; // Return an empty list when there is an error
+      return [];
     }
   } catch (error) {
     print('Error: $error');
-    return []; // Return an empty list when there is an exception
+    return [];
   }
 }
 
@@ -88,7 +85,7 @@ class ChartWidget extends StatelessWidget {
                 LineChartBarData(
                   spots: snapshot.data!,
                   isCurved: true,
-                  color: Colors.yellow,
+                  color: Colors.blue,
                   dotData: FlDotData(show: false),
                   belowBarData: BarAreaData(show: false),
                 ),

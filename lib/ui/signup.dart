@@ -32,8 +32,6 @@ class _RegistrationState extends State<Registration> {
       } else if (e.code == 'email-already-in-use') {
         print('The account already exists for that email.');
       }
-
-      // If an exception occurs, return null or throw an exception
       throw e;
     }
   }
@@ -51,14 +49,11 @@ class _RegistrationState extends State<Registration> {
           password.text.trim(),
         );
         await sendEmailVerification();
-
-        // Navigasi ke halaman lain setelah registrasi berhasil
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => Login()),
         );
       } on FirebaseAuthException catch (e) {
-        // Handle exceptions, if needed
         print('Error during registration: ${e.message}');
       }
     }
@@ -92,9 +87,13 @@ class _RegistrationState extends State<Registration> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign Up'),
+        title: Text(
+          'Sign Up',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
         backgroundColor: Color(0xFF1C2321),
+        automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         child: Container(

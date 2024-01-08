@@ -144,7 +144,7 @@ class _LoginState extends State<Login> {
                               context,
                               MaterialPageRoute(builder: (context) => Home()),
                             );
-                            //MyDataUploader().startUpload();
+
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text("Login successful"),
@@ -176,7 +176,6 @@ class _LoginState extends State<Login> {
                                 );
                               }
                             } else {
-                              // Handling other unexpected errors
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text('An error occurred'),

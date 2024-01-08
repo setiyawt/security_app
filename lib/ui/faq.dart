@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:security_system/ui/home.dart';
 
 class faq extends StatelessWidget {
   const faq({super.key});
@@ -6,12 +7,24 @@ class faq extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF5E6572),
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
-        title: Text("FAQ"),
+        title: Text('FAQ',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Color(0xFF1C2321),
         elevation: 0,
+        leading: BackButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Home(),
+              ),
+            );
+          },
+        ),
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -26,7 +39,49 @@ class faq extends StatelessWidget {
                   const EdgeInsets.only(top: 0, bottom: 0, left: 5, right: 5),
               child: Container(
                 width: 700,
-                height: 120,
+                height: 250,
+                decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                    color: Colors.black,
+                    width: 0.5,
+                  )),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "What is the Home Security Application?",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF2D3259),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "The Home Security Application is a comprehensive security solution designed to monitor and protect your home. It incorporates advanced features such as sensor detection and a 7-day historical data viewing capability.",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF2D3259),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.only(top: 0, bottom: 0, left: 5, right: 5),
+              child: Container(
+                width: 500,
+                height: 250,
                 decoration: BoxDecoration(
                   border: Border(
                       bottom: BorderSide(
@@ -41,7 +96,7 @@ class faq extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "What is Sensor Manage?",
+                        "How does the sensor detection feature work?",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -52,7 +107,7 @@ class faq extends StatelessWidget {
                         height: 20,
                       ),
                       Text(
-                        "Sensor Manage is an application designed to monitor and manage data from various connected sensors",
+                        " The sensor detection feature utilizes various sensors strategically placed around your home to identify any unusual activities or intrusions. When a sensor is triggered, the application sends real-time alerts to your device, allowing you to stay informed about potential security issues.",
                         style: TextStyle(
                           fontSize: 14,
                           color: Color(0xFF2D3259),
@@ -68,7 +123,7 @@ class faq extends StatelessWidget {
                   const EdgeInsets.only(top: 0, bottom: 0, left: 5, right: 5),
               child: Container(
                 width: 700,
-                height: 150,
+                height: 250,
                 decoration: BoxDecoration(
                   border: Border(
                       bottom: BorderSide(
@@ -83,7 +138,7 @@ class faq extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "What should I do if a sensor is not functioning?",
+                        "What types of sensors are supported by the application?",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -94,7 +149,7 @@ class faq extends StatelessWidget {
                         height: 20,
                       ),
                       Text(
-                        "Ensure that the sensor is properly connected. Check the physical connection and make sure the sensor software is installed correctly.",
+                        " The application supports a range of sensors, including motion sensors, door/window contact sensors, and other smart sensors compatible with the system. These sensors collectively contribute to creating a robust security network for your home.",
                         style: TextStyle(
                           fontSize: 14,
                           color: Color(0xFF2D3259),
@@ -110,7 +165,7 @@ class faq extends StatelessWidget {
                   const EdgeInsets.only(top: 0, bottom: 0, left: 5, right: 5),
               child: Container(
                 width: 700,
-                height: 150,
+                height: 250,
                 decoration: BoxDecoration(
                   border: Border(
                       bottom: BorderSide(
@@ -125,7 +180,7 @@ class faq extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "How do I calculate BMI using the BMI calculator?",
+                        "How does the 7-day historical data viewing feature work?",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -136,49 +191,7 @@ class faq extends StatelessWidget {
                         height: 20,
                       ),
                       Text(
-                        "Navigate to the BMI Calculator menu. Choose your gender, input your height and weight, then press the calculate button. Your BMI and category will be displayed.",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF2D3259),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(top: 0, bottom: 0, left: 5, right: 5),
-              child: Container(
-                width: 700,
-                height: 180,
-                decoration: BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(
-                    color: Colors.grey,
-                    width: 0.5,
-                  )),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "What are the BMI category criteria used in the app?",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF2D3259),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        "The BMI categories used are as follows:\n- Less than 18.5: Underweight\n- 18.5 - 24.9: Normal\n- 25.0 - 29.9: Overweight\n- 30.0 or more: Obese",
+                        " The application stores and organizes data collected by the sensors over the past 7 days. Users can access a visual representation of this data through intuitive graphs and charts, allowing them to review historical security events and patterns.",
                         style: TextStyle(
                           fontSize: 14,
                           color: Color(0xFF2D3259),
